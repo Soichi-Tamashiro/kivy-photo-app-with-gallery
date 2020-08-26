@@ -14,41 +14,43 @@ throw an exception during the kv language processing.
 # import logging
 # Logger.setLevel(logging.TRACE)
 
-
-from kivy.uix.scatter import Scatter
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
+from kivy.core.window import Window
 import time
 Builder.load_string('''
 <CameraClick>:
     orientation: 'vertical'
-    Scatter:
-        rotation: -90
-        do_rotation: False
-        do_scale: False
-        # do_translation: False
+    RelativeLayout
+        size_hint: None,None
+        size: 1920,1080
+        canvas.before:
+            Translate:
+                # x: 20
+                y: 1920
+            Rotate:
+                angle: -90
+                axis: 0,0,1
         Camera:
             id: camera
-            resolution: (640, 480)
-            size: root.size
+            resolution: (1920, 1080)
             keep_ratio: True
             allow_stretch: True
-            play: False
-
-    BoxLayout:
+            play: True
+            canvas.before:
+                Rectangle
+                    size: self.size
+    ToggleButton:
+        text: 'Play'
+        on_press: camera.play = not camera.play
         size_hint_y: None
-        height: root.size[1]*0.1
-        ToggleButton:
-            text: 'Play'
-            on_press: camera.play = not camera.play
-            size_hint_y: None
-            height: '48dp'
-        Button:
-            text: 'Capture'
-            size_hint_y: None
-            height: '48dp'
-            on_press: root.capture()
+        height: '48dp'
+    Button:
+        text: 'Capture'
+        size_hint_y: None
+        height: '48dp'
+        on_press: root.capture()
 ''')
 
 
