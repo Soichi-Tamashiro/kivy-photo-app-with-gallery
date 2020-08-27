@@ -19,38 +19,71 @@ from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.core.window import Window
 import time
+from android.storage import primary_external_storage_path
+from kivymd.app import MDApp
+primary_ext_storage = primary_external_storage_path()
 Builder.load_string('''
 <CameraClick>:
+    id: main
     orientation: 'vertical'
-    RelativeLayout
-        size_hint: None,None
-        size: 1920,1080
-        canvas.before:
-            Translate:
-                # x: 20
-                y: 1920
-            Rotate:
-                angle: -90
-                axis: 0,0,1
-        Camera:
-            id: camera
-            resolution: (1920, 1080)
-            keep_ratio: True
-            allow_stretch: True
-            play: True
+    canvas.before:
+        Color:
+            rgba: (.06, .45, .45, 1)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    MDToolbar:
+        title: "Camera App"
+        md_bg_color: app.theme_cls.accent_dark
+    MDLabel:
+        text: ""
+    BoxLayout:
+        size_hint_y: None
+        height: main.size[1]*.3
+        RelativeLayout
+            size_hint: None,None
+            # size: 1920,1080
+            size: 1900,1080
             canvas.before:
-                Rectangle
-                    size: self.size
-    ToggleButton:
-        text: 'Play'
-        on_press: camera.play = not camera.play
+                Translate:
+                    # x: 20
+                    y: 1920
+                Rotate:
+                    angle: -90
+                    axis: 0,0,1
+                Color:
+                    rgba: (.06, .45, .45, 1)
+            Camera:
+                id: camera
+                resolution: (1920, 1080)
+                keep_ratio: True
+                allow_stretch: True
+                play: True
+                canvas.before:
+                    Rectangle
+                        size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
         size_hint_y: None
-        height: '48dp'
-    Button:
-        text: 'Capture'
-        size_hint_y: None
-        height: '48dp'
-        on_press: root.capture()
+        height: main.size[1]*.1
+        MDLabel:
+            id: path_to_android
+            text: "asasdad"
+            size_hint_y: None
+            height: main.size[1]*.05
+        BoxLayout:
+            orientation: 'horizontal'
+            ToggleButton:
+                text: 'Play'
+                on_press: camera.play = not camera.play
+                # size_hint_y: None
+                # height: '48dp'
+            Button:
+                text: 'Capture'
+                # size_hint_y: None
+                # height: '48dp'
+                on_press: root.capture()
 ''')
 
 
@@ -62,14 +95,25 @@ class CameraClick(BoxLayout):
         '''
         camera = self.ids['camera']
         timestr = time.strftime("%Y%m%d_%H%M%S")
-        camera.export_to_png("IMG_{}.png".format(timestr))
+        # camera.export_to_png("IMG_{}.png".format(timestr))
         print("Captured")
+        path_to_images = str(primary_ext_storage)+"/DCIM/Camera/"
+        self.ids.path_to_android.text = path_to_images
 
+        camera.export_to_png(path_to_images+"{}.jpg".format(timestr))
 
-class TestCamera(App):
+class TestCamera(MDApp):
 
     def build(self):
+        Window.bind(on_keyboard=self.key_input)
+        self.theme_cls.accent_palette = 'Blue'
         return CameraClick()
+
+    def key_input(self, window, key, scancode, codepoint, modifier):
+        if key == 27:
+            return True  # override the default behaviour
+        else:           # the key now does nothing
+            return False
 
 
 TestCamera().run()
