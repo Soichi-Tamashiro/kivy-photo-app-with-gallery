@@ -1,128 +1,216 @@
 # -*- coding: utf-8 -*-
-from kivy.lang import Builder
-from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import StringProperty
 
 from kivymd.app import MDApp
-from kivymd.theming import ThemableBehavior
-from kivymd.uix.list import OneLineIconListItem, MDList
+from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.properties import StringProperty, ListProperty
+from kivymd.theming import ThemableBehavior
+from kivymd.uix.list import MDList
+from kivy.properties import ObjectProperty
+from kivy.core.window import Window
+from kivy.utils import platform
+
+from camera_click import CameraClick
 KV = '''
 # Menu item in the DrawerList list.
-<ItemDrawer>:
-    theme_text_color : "Custom"
-    on_release:
-        self.parent.set_color_item(self)
-        # root.root.
-    IconLeftWidget:
-        id: icon
-        icon: root.icon
-        theme_text_color: "Custom"
-        text_color: root.text_color
-
-<ContentNavigationDrawer>:
-    orientation: "vertical"
-    padding: "8dp"
-    spacing: "8dp"
-
-    AnchorLayout:
-        anchor_x: "left"
-        size_hint_y: None
-        height: avatar.height
-
-        Image:
-            id: avatar
-            size_hint: None, None
-            size: "56dp", "56dp"
-            source: "usb.png"
-    MDLabel:
-        text: "Gallery App"
-        font_style: "Button"
-        size_hint_y: None
-        height: self.texture_size[1]
-    MDLabel:
-        text: "soichi.tamashiro@gmail.com"
-        font_style: "Caption"
-        size_hint_y: None
-        height: self.texture_size[1]
-    ScrollView:
-
-        DrawerList:
-            id: md_list
-
 Screen:
-
+    screen_manager: screen_manager
+    nav_drawer: nav_drawer
     NavigationLayout:
-
         ScreenManager:
-
+            id: screen_manager
             Screen:
-                # id: camera
-                name: "camera"
+                name: "scr 1"
                 BoxLayout:
                     orientation: 'vertical'
-
                     MDToolbar:
-                        title: "Camera and Gallery"
-                        elevation: 10
-                        left_action_items: [['menu', lambda x: nav_drawer.toggle_nav_drawer()]]
-
+                        title: 'Camera'
+                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
+                        elevation:10
                     Widget:
+                MDLabel:
+                    text: "Camera"
+                    halign: "center"
+
             Screen:
-                # id: gallery
-                name: "gallery"
+                name: "scr 2"
+                BoxLayout:
+                    orientation: 'vertical'
+                    MDToolbar:
+                        title: 'Gallery'
+                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
+                        elevation:10
+                    Widget:
                 MDLabel:
                     text: "Gallery"
                     halign: "center"
 
+            Screen:
+                name: "scr 3"
+                BoxLayout:
+                    orientation: 'vertical'
+                    MDToolbar:
+                        title: 'Signin (Beta)'
+                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
+                        elevation:10
+                    Widget:
+                MDLabel:
+                    text: "Signin (Beta)"
+                    halign: "center"
+            Screen:
+                name: "scr 4"
+                BoxLayout:
+                    orientation: 'vertical'
+                    MDToolbar:
+                        title: 'Google Photos (Beta)'
+                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
+                        elevation:10
+                    Widget:
+                MDLabel:
+                    text: "Google Photos (Beta)"
+                    halign: "center"
+
         MDNavigationDrawer:
             id: nav_drawer
-
             ContentNavigationDrawer:
-                id: content_drawer
+                orientation: 'vertical'
+                padding: "8dp"
+                spacing: "8dp"
+                AnchorLayout:
+                    anchor_x: "center"
+                    size_hint_y: None
+                    height: avatar.height
+                    Image:
+                        id: avatar
+                        size_hint: None, None
+                        size: "100dp", "100dp"
+                        source: "resources/doctor.png"
+                MDLabel:
+                    text: "Soichi Tamashiro"
+                    font_style: "Subtitle1"
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                MDLabel:
+                    text: "soichi.tamashiro@gmail.com"
+                    size_hint_y: None
+                    font_style: "Caption"
+                    height: self.texture_size[1]
+                ScrollView:
+                    DrawerList:
+                        id: md_list
 
+                        MDList:
+                            OneLineIconListItem:
+                                id: camera_button
+                                text: "Cámara"
+
+                                on_release:
+                                    root.nav_drawer.set_state("close")
+                                    root.screen_manager.current = "scr 1"
+
+                                IconLeftWidget:
+                                    icon: "camera"
+
+
+                            OneLineIconListItem:
+                                text: "Mis Fotos"
+
+                                on_release:
+                                    root.nav_drawer.set_state("close")
+                                    root.screen_manager.current = "scr 2"
+
+                                IconLeftWidget:
+                                    icon: "image-search"
+
+
+                            OneLineIconListItem:
+                                text: "Signin (Beta)"
+
+                                on_release:
+                                    root.nav_drawer.set_state("close")
+                                    root.screen_manager.current = "scr 3"
+
+                                IconLeftWidget:
+                                    icon: "account-plus-outline"
+
+                            OneLineIconListItem:
+                                text: "Google Photos (Beta)"
+
+                                on_release:
+                                    root.nav_drawer.set_state("close")
+                                    root.screen_manager.current = "scr 4"
+
+                                IconLeftWidget:
+                                    icon: "google-photos"
 '''
 
 
-class ContentNavigationDrawer(BoxLayout):
-    pass
+class DemoApp(MDApp):
+    nav_drawer = ObjectProperty()
+    screen_manager = ObjectProperty()
+    camera_widget= CameraClick()
+    class ContentNavigationDrawer(BoxLayout):
+        pass
 
+    class DrawerList(ThemableBehavior, MDList):
+        pass
 
-class ItemDrawer(OneLineIconListItem):
-    icon = StringProperty()
-    text_color = ListProperty((0, 0, 0, 1))
-
-
-class DrawerList(ThemableBehavior, MDList):
     def set_color_item(self, instance_item):
         """Called when tap on a menu item."""
-
         # Set the color of the icon and a text for the menu ItemDrawer
         for item in self.children:
             if item.text_color == self.theme_cls.primary_color:
                 item.text_color == self.theme_cls.text_color
                 break
         instance_item.text_color = self.theme_cls.primary_color
+        pass
 
+    def request_android_permissions(self):
+        """
+        Since API 23, Android requires permission to be requested at runtime.
+        This function requests permission and handles the response via a
+        callback.
+        The request will produce a popup if permissions have not already been
+        been granted, otherwise it will do nothing.
+        """
+        from android.permissions import request_permissions, Permission
 
-class TestNavigationDrawer(MDApp):
+        def callback(permissions, results):
+            """
+            Defines the callback to be fired when runtime permission
+            has been granted or denied. This is not strictly required,
+            but added for the sake of completeness.
+            """
+            if all([res for res in results]):
+                print("callback. All permissions granted.")
+            else:
+                print("callback. Some permissions refused.")
+
+        request_permissions([Permission.CAMERA,
+                             Permission.READ_EXTERNAL_STORAGE,
+                             Permission.WRITE_EXTERNAL_STORAGE], callback)
+        # # To request permissions without a callback, do:
+        # request_permissions([Permission.CAMERA,
+        #                      Permission.READ_EXTERNAL_STORAGE,
+        #                      Permission.WRITE_EXTERNAL_STORAGE])
+
     def build(self):
-        return Builder.load_string(KV)
+        screen = Builder.load_string(KV)
+
+        if platform == "android":
+            print("Android detected. Requesting permissions")
+            self.request_android_permissions()
+        Window.bind(on_keyboard=self.key_input)
+        return screen
+
+    def key_input(self, window, key, scancode, codepoint, modifier):
+        if key == 27:
+            return True  # override the default behaviour
+        else:           # the key now does nothing
+            return False
 
     def on_start(self):
-        icons_item = {
-            "camera": "Cámara",
-            "image-search": "Mis Fotos",
-            "account-plus-outline": "Signin (Beta)",
-            "google-photos": "Google Photos (Beta)",
-        }
-        for icon_name in icons_item.keys():
-            self.root.ids.content_drawer.ids.md_list.add_widget(
-                ItemDrawer(icon=icon_name, text=icons_item[icon_name])
-            )
+        pass
 
 
 if __name__ == '__main__':
-    TestNavigationDrawer().run()
+    DemoApp().run()
