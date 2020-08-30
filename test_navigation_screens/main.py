@@ -16,6 +16,15 @@ Screen:
         ScreenManager:
             id: screen_manager
             Screen:
+                BoxLayout:
+                    orientation: 'vertical'
+                    MDToolbar:
+                        title: 'Demo Application'
+                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
+                        elevation:10
+                    Widget:
+
+            Screen:
                 id: camera_screen
                 name: "camera_screen"
                 BoxLayout:
