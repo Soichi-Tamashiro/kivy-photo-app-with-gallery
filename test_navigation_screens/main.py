@@ -9,7 +9,6 @@ from kivy.properties import ObjectProperty
 from kivy.core.window import Window
 from kivy.utils import platform
 
-from camera_click import CameraClick
 KV = '''
 # Menu item in the DrawerList list.
 Screen:
@@ -31,8 +30,6 @@ Screen:
                 MDLabel:
                     text: "Camera"
                     halign: "center"
-                BoxLayout:
-                    id: camera_box
 
             Screen:
                 id: gallery_screen
@@ -154,11 +151,6 @@ Screen:
 class DemoApp(MDApp):
     nav_drawer = ObjectProperty()
     screen_manager = ObjectProperty()
-    camera_widget = CameraClick()
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.ids.camera_box.add_widget(self.camera_widget)
 
     class ContentNavigationDrawer(BoxLayout):
         pass
@@ -212,6 +204,7 @@ class DemoApp(MDApp):
             print("Android detected. Requesting permissions")
             self.request_android_permissions()
         Window.bind(on_keyboard=self.key_input)
+        self.theme_cls.accent_palette = 'Blue'
         return screen
 
     def key_input(self, window, key, scancode, codepoint, modifier):
