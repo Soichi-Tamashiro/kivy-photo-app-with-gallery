@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
@@ -7,6 +8,7 @@ from kivymd.uix.list import MDList
 from kivy.properties import ObjectProperty
 from kivy.core.window import Window
 from kivy.utils import platform
+
 KV = '''
 # Menu item in the DrawerList list.
 Screen:
