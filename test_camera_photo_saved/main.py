@@ -74,13 +74,13 @@ Builder.load_string('''
             height: main.size[1]*.05
         BoxLayout:
             orientation: 'horizontal'
-            ToggleButton:
-                text: 'Play'
-                on_press: camera.play = not camera.play
+            Button:
+                text: 'Galería'
+                # on_press: camera.play = not camera.play
                 # size_hint_y: None
                 # height: '48dp'
             Button:
-                text: 'Capture'
+                text: 'Captura'
                 # size_hint_y: None
                 # height: '48dp'
                 on_press: root.capture()
