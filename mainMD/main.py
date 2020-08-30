@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
@@ -8,7 +7,7 @@ from kivymd.uix.list import MDList
 from kivy.properties import ObjectProperty
 from kivy.core.window import Window
 from kivy.utils import platform
-
+from kivy.uix.screenmanager import ScreenManager, Screen
 KV = '''
 # Menu item in the DrawerList list.
 Screen:
@@ -17,6 +16,7 @@ Screen:
     NavigationLayout:
         ScreenManager:
             id: screen_manager
+
             Screen:
                 id: camera_screen
                 name: "camera_screen"
@@ -72,6 +72,15 @@ Screen:
                 MDLabel:
                     text: "Google Photos (Beta)"
                     halign: "center"
+
+            Screen:
+                BoxLayout:
+                    orientation: 'vertical'
+                    MDToolbar:
+                        title: 'Demo Application'
+                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
+                        elevation:10
+                    Widget:
 
         MDNavigationDrawer:
             id: nav_drawer
