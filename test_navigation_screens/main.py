@@ -19,7 +19,8 @@ Screen:
         ScreenManager:
             id: screen_manager
             Screen:
-                name: "scr 1"
+                id: camera_screen
+                name: "camera_screen"
                 BoxLayout:
                     orientation: 'vertical'
                     MDToolbar:
@@ -30,9 +31,12 @@ Screen:
                 MDLabel:
                     text: "Camera"
                     halign: "center"
+                BoxLayout:
+                    id: camera_box
 
             Screen:
-                name: "scr 2"
+                id: gallery_screen
+                name: " gallery_screen"
                 BoxLayout:
                     orientation: 'vertical'
                     MDToolbar:
@@ -45,7 +49,8 @@ Screen:
                     halign: "center"
 
             Screen:
-                name: "scr 3"
+                id: signin_screen
+                name: "signin_screen"
                 BoxLayout:
                     orientation: 'vertical'
                     MDToolbar:
@@ -56,8 +61,10 @@ Screen:
                 MDLabel:
                     text: "Signin (Beta)"
                     halign: "center"
+
             Screen:
-                name: "scr 4"
+                id: google_screen
+                name: "google_screen"
                 BoxLayout:
                     orientation: 'vertical'
                     MDToolbar:
@@ -105,7 +112,7 @@ Screen:
 
                                 on_release:
                                     root.nav_drawer.set_state("close")
-                                    root.screen_manager.current = "scr 1"
+                                    root.screen_manager.current = "camera_screen"
 
                                 IconLeftWidget:
                                     icon: "camera"
@@ -116,7 +123,7 @@ Screen:
 
                                 on_release:
                                     root.nav_drawer.set_state("close")
-                                    root.screen_manager.current = "scr 2"
+                                    root.screen_manager.current = " gallery_screen"
 
                                 IconLeftWidget:
                                     icon: "image-search"
@@ -127,7 +134,7 @@ Screen:
 
                                 on_release:
                                     root.nav_drawer.set_state("close")
-                                    root.screen_manager.current = "scr 3"
+                                    root.screen_manager.current = "signin_screen"
 
                                 IconLeftWidget:
                                     icon: "account-plus-outline"
@@ -137,7 +144,7 @@ Screen:
 
                                 on_release:
                                     root.nav_drawer.set_state("close")
-                                    root.screen_manager.current = "scr 4"
+                                    root.screen_manager.current = "google_screen"
 
                                 IconLeftWidget:
                                     icon: "google-photos"
@@ -147,7 +154,12 @@ Screen:
 class DemoApp(MDApp):
     nav_drawer = ObjectProperty()
     screen_manager = ObjectProperty()
-    camera_widget= CameraClick()
+    camera_widget = CameraClick()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ids.camera_box.add_widget(self.camera_widget)
+
     class ContentNavigationDrawer(BoxLayout):
         pass
 

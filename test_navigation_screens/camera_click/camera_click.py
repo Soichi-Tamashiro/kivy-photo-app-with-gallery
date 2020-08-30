@@ -22,8 +22,7 @@ import time
 from android.storage import primary_external_storage_path
 from kivymd.app import MDApp
 from kivy.utils import platform
-if platform == "android":
-    primary_ext_storage = primary_external_storage_path()
+primary_ext_storage = primary_external_storage_path()
 Builder.load_string('''
 <CameraClick>:
     id: main
