@@ -1,181 +1,61 @@
 # -*- coding: utf-8 -*-
 from kivymd.app import MDApp
 from kivy.lang import Builder
-from kivy.uix.boxlayout import BoxLayout
-from kivymd.theming import ThemableBehavior
-from kivymd.uix.list import MDList
-from kivy.properties import ObjectProperty
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.core.window import Window
 from kivy.utils import platform
-from kivy.uix.screenmanager import ScreenManager, Screen
-KV = '''
-# Menu item in the DrawerList list.
-Screen:
-    screen_manager: screen_manager
-    nav_drawer: nav_drawer
-    NavigationLayout:
-        ScreenManager:
-            id: screen_manager
+from plyer import storagepath
+Builder.load_string(
+    '''
+<Recetas>:
+    orientation:'vertical'
+    MDToolbar:
+        title: 'Mis Recetas'
+        md_bg_color: .2, .2, .2, 1
+        specific_text_color: 1, 1, 1, 1
 
-            Screen:
-                id: camera_screen
-                name: "camera_screen"
-                BoxLayout:
-                    orientation: 'vertical'
-                    MDToolbar:
-                        title: 'Camera'
-                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
-                        elevation:10
-                    Widget:
-                MDLabel:
-                    text: "Camera"
-                    halign: "center"
+    MDBottomNavigation:
+        panel_color: .2, .2, .2, 1
 
-            Screen:
-                id: gallery_screen
-                name: " gallery_screen"
-                BoxLayout:
-                    orientation: 'vertical'
-                    MDToolbar:
-                        title: 'Gallery'
-                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
-                        elevation:10
-                    Widget:
-                MDLabel:
-                    text: "Gallery"
-                    halign: "center"
+        MDBottomNavigationItem:
+            name: 'signin_screen'
+            text: 'Cuenta'
+            icon: 'account-plus-outline'
 
-            Screen:
-                id: signin_screen
-                name: "signin_screen"
-                BoxLayout:
-                    orientation: 'vertical'
-                    MDToolbar:
-                        title: 'Signin (Beta)'
-                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
-                        elevation:10
-                    Widget:
-                MDLabel:
-                    text: "Signin (Beta)"
-                    halign: "center"
+            MDLabel:
+                text: 'Mi Cuenta'
+                halign: 'center'
 
-            Screen:
-                id: google_screen
-                name: "google_screen"
-                BoxLayout:
-                    orientation: 'vertical'
-                    MDToolbar:
-                        title: 'Google Photos (Beta)'
-                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
-                        elevation:10
-                    Widget:
-                MDLabel:
-                    text: "Google Photos (Beta)"
-                    halign: "center"
+        MDBottomNavigationItem:
+            name: 'camera_screen'
+            text: 'Cámara'
+            icon: 'camera'
 
-            Screen:
-                BoxLayout:
-                    orientation: 'vertical'
-                    MDToolbar:
-                        title: 'Demo Application'
-                        left_action_items: [["menu", lambda x: nav_drawer.toggle_nav_drawer()]]
-                        elevation:10
-                    Widget:
+            MDLabel:
+                text: 'Mi Cámara'
+                halign: 'center'
 
-        MDNavigationDrawer:
-            id: nav_drawer
-            ContentNavigationDrawer:
-                orientation: 'vertical'
-                padding: "8dp"
-                spacing: "8dp"
-                AnchorLayout:
-                    anchor_x: "center"
-                    size_hint_y: None
-                    height: avatar.height
-                    Image:
-                        id: avatar
-                        size_hint: None, None
-                        size: "100dp", "100dp"
-                        source: "resources/doctor.png"
-                MDLabel:
-                    text: "Soichi Tamashiro"
-                    font_style: "Subtitle1"
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                MDLabel:
-                    text: "soichi.tamashiro@gmail.com"
-                    size_hint_y: None
-                    font_style: "Caption"
-                    height: self.texture_size[1]
-                ScrollView:
-                    DrawerList:
-                        id: md_list
+        MDBottomNavigationItem:
+            name: 'gallery_screen'
+            text: 'Mis Fotos'
+            icon: 'image-search'
 
-                        MDList:
-                            OneLineIconListItem:
-                                id: camera_button
-                                text: "Cámara"
+            MDLabel:
+                text: 'Mis Fotos'
+                halign: 'center'
+            MDRaisedButton:
+                text: 'Pictures'
+                on_press: label.text = str(storagepath.get_pictures_dir())
 
-                                on_release:
-                                    root.nav_drawer.set_state("close")
-                                    root.screen_manager.current = "camera_screen"
-
-                                IconLeftWidget:
-                                    icon: "camera"
-
-
-                            OneLineIconListItem:
-                                text: "Mis Fotos"
-
-                                on_release:
-                                    root.nav_drawer.set_state("close")
-                                    root.screen_manager.current = " gallery_screen"
-
-                                IconLeftWidget:
-                                    icon: "image-search"
-
-
-                            OneLineIconListItem:
-                                text: "Signin (Beta)"
-
-                                on_release:
-                                    root.nav_drawer.set_state("close")
-                                    root.screen_manager.current = "signin_screen"
-
-                                IconLeftWidget:
-                                    icon: "account-plus-outline"
-
-                            OneLineIconListItem:
-                                text: "Google Photos (Beta)"
-
-                                on_release:
-                                    root.nav_drawer.set_state("close")
-                                    root.screen_manager.current = "google_screen"
-
-                                IconLeftWidget:
-                                    icon: "google-photos"
 '''
+)
 
 
-class DemoApp(MDApp):
-    nav_drawer = ObjectProperty()
-    screen_manager = ObjectProperty()
+class Recetas(MDBoxLayout):
+    pass
 
-    class ContentNavigationDrawer(BoxLayout):
-        pass
 
-    class DrawerList(ThemableBehavior, MDList):
-        pass
-
-    def set_color_item(self, instance_item):
-        """Called when tap on a menu item."""
-        # Set the color of the icon and a text for the menu ItemDrawer
-        for item in self.children:
-            if item.text_color == self.theme_cls.primary_color:
-                item.text_color == self.theme_cls.text_color
-                break
-        instance_item.text_color = self.theme_cls.primary_color
-        pass
+class MainApp(MDApp):
 
     def request_android_permissions(self):
         """
@@ -207,14 +87,13 @@ class DemoApp(MDApp):
         #                      Permission.WRITE_EXTERNAL_STORAGE])
 
     def build(self):
-        screen = Builder.load_string(KV)
-
+        self.theme_cls.primary_palette = "Blue"
         if platform == "android":
             print("Android detected. Requesting permissions")
             self.request_android_permissions()
         Window.bind(on_keyboard=self.key_input)
         self.theme_cls.accent_palette = 'Blue'
-        return screen
+        return Recetas()
 
     def key_input(self, window, key, scancode, codepoint, modifier):
         if key == 27:
@@ -227,4 +106,4 @@ class DemoApp(MDApp):
 
 
 if __name__ == '__main__':
-    DemoApp().run()
+    MainApp().run()
