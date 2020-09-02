@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
-import kivy
-import kivymd
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.core.window import Window
@@ -28,7 +25,7 @@ BoxLayout:
 class MainApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Window.bind(on_keyboard=self.events)
+        Window.bind(on_keyboard=self.events)
         self.manager_open = False
         self.file_manager = MDFileManager(
             exit_manager=self.exit_manager,
