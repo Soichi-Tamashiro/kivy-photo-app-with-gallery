@@ -5,8 +5,14 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.core.window import Window
 from kivy.utils import platform
 from plyer import storagepath
+from kivymd.uix.filemanager import MDFileManager
+from kivymd.toast import toast
 Builder.load_string(
     '''
+<MyTile@SmartTileWithStar>
+    size_hint_y: None
+    height: "240dp"
+
 <Recetas>:
     orientation:'vertical'
     MDToolbar:
@@ -39,19 +45,74 @@ Builder.load_string(
             name: 'gallery_screen'
             text: 'Mis Fotos'
             icon: 'image-search'
+            ScrollView:
+
+                MDGridLayout:
+                    cols: 3
+                    adaptive_height: True
+                    padding: dp(4), dp(4)
+                    spacing: dp(4)
 
             MDLabel:
+                id: fotos_label
                 text: 'Mis Fotos'
                 halign: 'center'
             MDRaisedButton:
                 text: 'Pictures'
-                on_press: label.text = str(storagepath.get_pictures_dir())
+                on_press:
+                    root.btn()
+                    app.file_manager_open()
 
 '''
 )
 
 
 class Recetas(MDBoxLayout):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(on_keyboard=self.events)
+        # my_path = str(storagepath.get_pictures_dir())
+        self.manager_open = False
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager,
+            select_path=self.select_path,
+            preview=True,
+        )
+
+    def file_manager_open(self):
+        self.file_manager.show('/')  # output manager to the screen
+        self.manager_open = True
+
+    def select_path(self, path):
+        '''It will be called when you click on the file name
+        or the catalog selection button.
+
+        :type path: str;
+        :param path: path to the selected directory or file;
+        '''
+
+        self.exit_manager()
+        toast(path)
+
+    def exit_manager(self, *args):
+        '''Called when the user reaches the root of the directory tree.'''
+
+        self.manager_open = False
+        self.file_manager.close()
+
+    def events(self, instance, keyboard, keycode, text, modifiers):
+        '''Called when buttons are pressed on the mobile device.'''
+
+        if keyboard in (1001, 27):
+            if self.manager_open:
+                self.file_manager.back()
+        return True
+
+    def btn(self):
+        print(str(storagepath.get_pictures_dir()))
+        self.ids.fotos_label.text = str(storagepath.get_pictures_dir())
+
     pass
 
 
